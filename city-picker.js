@@ -91,41 +91,85 @@ city['澳门特别行政区'] 	= '';
 ////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
 
-function setRegions() {
-	for ( region in province ) {
-		document.write('<option value="' + region + '">' + region + '</option>');
-	}
-}
+(function($){
+    $.fn.cityPicker = function(settings){
+        if ( $(this).length < 1 )   return;
 
-function setProvince(objRegionSelector, objProviceSelector, objCitySelector) {
-	objProviceSelector.length 	= 0;
-	objCitySelector.length 		= 0;
-	var provinceArray = [], 
-		region = objRegionSelector.options[objRegionSelector.selectedIndex].text;
-	if ( province[region] ) {
-		objProviceSelector.disabled = false;
-		objCitySelector.disabled 	= true;
-		objProviceSelector.options[0] = new Option('任意省份/直辖市', '');
-		provinceArray = province[region].split('|');
-		for (var i = 0; i < provinceArray.length; i++) {
-			objProviceSelector.options[i + 1] = new Option(provinceArray[i], provinceArray[i]);
-		}
-	} else { 
-		objProviceSelector.disabled = true; 
-	}
-}
+        var cityPickerObject        = $(this),
+            regionSelectorObject    = $('.region', this),
+            provinceSelectorObject  = $('.province', this),
+            citySelectorObject      = $('.city', this);
 
-function setCity(objProviceSelector, objCitySelector) {
-	objCitySelector.length = 0;
-	var cityArray = [], 
-		country = objProviceSelector.options[objProviceSelector.selectedIndex].text;
-	if ( city[country] ) {
-		objCitySelector.disabled = false;
-		objCitySelector.options[0] = new Option('任意城市', '');
-		cityArray = city[country].split('|');
-		for (var i = 0; i < cityArray.length; i++)
-			objCitySelector.options[i + 1] = new Option(cityArray[i], cityArray[i]);
-	} else {
-		objCitySelector.disabled = true;
-	}
-}
+        // Default Settings
+        settings = $.extend({
+            required: true
+        }, settings);
+
+        var setRegions = function() {
+            if ( !settings['required'] ) {
+                regionSelectorObject.append('<option value="">任意地区</option>');
+            }
+            for ( region in province ) {
+                regionSelectorObject.append('<option value="' + region + '">' + region + '</option>');
+            }
+        }
+
+        var setProvince = function() {
+            var provinceArray   = [],
+                regionName      = $(regionSelectorObject).find(':selected').val();
+
+            provinceSelectorObject.empty();
+            if ( province[regionName] ) {
+                provinceArray = province[regionName].split('|');
+                if ( !settings['required'] ) {
+                    provinceSelectorObject.append('<option value="">任意省份</option>');
+                }
+                for (var i = 0; i < provinceArray.length; i++) {
+                    provinceSelectorObject.append('<option value="' + provinceArray[i] + '">' + provinceArray[i] + '</option>');
+                }
+                provinceSelectorObject.removeAttr('disabled');
+            } else {
+                provinceSelectorObject.attr('disabled', 'disabled');
+            }
+        }
+
+        var setCity = function() {
+            var cityArray       = [],
+                provinceName    = $(provinceSelectorObject).find(':selected').val();
+
+            citySelectorObject.empty();
+            if ( city[provinceName] ) {
+                cityArray = city[provinceName].split('|');
+                if ( !settings['required'] ) {
+                    citySelectorObject.append('<option value="">任意城市</option>');
+                }
+                for (var i = 0; i < cityArray.length; i++) {
+                    citySelectorObject.append('<option value="' + cityArray[i] + '">' + cityArray[i] + '</option>');
+                }
+                citySelectorObject.removeAttr('disabled');
+            } else {
+                citySelectorObject.attr('disabled', 'disabled');
+            }
+        }
+
+        var initializeCityPicker = function() {
+            setRegions();
+            if ( settings['required'] ) {
+                setProvince();
+                setCity();
+            } else {
+                provinceSelectorObject.attr('disabled', 'disabled');
+                citySelectorObject.attr('disabled', 'disabled');
+            }
+
+            regionSelectorObject.bind('change', function(){
+                setProvince();
+                setCity();
+            });
+            provinceSelectorObject.bind('change', function() {
+                setCity();
+            });
+        }
+        initializeCityPicker();
+    }
+})(jQuery);

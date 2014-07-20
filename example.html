@@ -16,25 +16,28 @@
 			width: 220px;
 		}
 	</style>
-	<script type="text/javascript" src="city-picker.js"></script>
 </head>
 <body>
 	<!-- Region-Provice-City HTML -->
-	<form action="#">
+	<div class="city-picker">
 		<span>
-			Region: <select onchange="setProvince(this, province, city)" name="region" />
-				<option value="" selected>任意地区</option>
-				<script type="text/javascript">
-					setRegions();
-				</script>
-			</select>
+			Region: <select class="region" /></select>
 		</span>
 		<span>
-			Province: <select name="province" disabled="disabled" onchange="setCity(this, city)"></select>
+			Province: <select class="province"></select>
 		</span>
 		<span>
-			City: <select name="city" disabled="disabled"></select>
+			City: <select class="city"></select>
 		</span>
-	</form>
+	</div> <!-- .city-picker -->
+
+	<!-- JavaScript -->
+	<script type="text/javascript" src="jquery-1.11.1.min.js"></script>
+	<script type="text/javascript" src="city-picker.js"></script>
+	<script type="text/javascript">
+		$('.city-picker').cityPicker({
+			required: true
+		});
+	</script>
 </body>
 </html>

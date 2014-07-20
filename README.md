@@ -9,25 +9,30 @@ A region-provice-city selector designed for the Chinese. It is combined with thr
 
 Import Java Script:
 ```
+<script type="text/javascript" src="jquery-1.11.1.min.js"></script>
 <script type="text/javascript" src="city-picker.js"></script>
 ```
 
 Add following lines to the HTML:
 ```
-<form action="#">
-    <span>Region: 
-        <select onchange="setProvince(this, province, city)" name="region" />
-    		<option value="" selected>任意地区</option>
-    		<script type="text/javascript">setRegions();</script>
-    	</select>
-	</span>
-	<span>Province: 
-	    <select name="province" disabled="disabled" onchange="setCity(this, city)"></select>
+<div class="city-picker">
+	<span>
+		Region: <select class="region" /></select>
 	</span>
 	<span>
-		City: <select name="city" disabled="disabled"></select>
+		Province: <select class="province"></select>
 	</span>
-</form>
+	<span>
+		City: <select class="city"></select>
+	</span>
+</div> <!-- .city-picker -->
+
+// Initialize the controls
+<script type="text/javascript">
+	$('.city-picker').cityPicker({
+		required: true
+	});
+</script>
 ```
 
 > **Tip:** See [<i class="icon-share"></i> Example](https://github.com/zjhzxhz/city-picker/blob/master/example.html) in the repository.
